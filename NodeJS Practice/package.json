@@ -1,0 +1,7 @@
+{
+    "name": "http_with_express",
+    "dependencies": {
+        "express": "^4.15.0",
+        "watson-developer-cloud": "^2.39.0"
+    }
+}
