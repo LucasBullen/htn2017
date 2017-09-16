@@ -82,8 +82,6 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 		return s.list(APIstub, args)
 	} else if function == "queryAllArt" {
 		return s.queryAllArt(APIstub)
-	} else if function == "purchase" {
-		return s.purchase(APIstub, args)
 	} else if function == "setStatus" {
 		return s.setStatus(APIstub, args)
 	} else if function == "setPrice" {
@@ -94,7 +92,7 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 		return s.bid(APIstub, args)
 	}
 
-	return shim.Error("Invalid Smart Contract function name. %s GGGG", function)
+	return shim.Error("Invalid Smart Contract function name.")
 }
 
 func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Response {
