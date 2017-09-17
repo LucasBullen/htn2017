@@ -90,6 +90,8 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 		return s.setUpAuction(APIstub, args)
 	} else if function == "bid" {			//artid, userid, bcn_ammount
 		return s.bid(APIstub, args)
+	} else if function == "endAuction" {
+		return s.endAuction(APIstub, args)
 	}
 
 	return shim.Error("Invalid Smart Contract function name.")
