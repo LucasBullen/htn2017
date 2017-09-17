@@ -11,14 +11,17 @@ var visual_recognition = watson.visual_recognition({
 
 var fs = require('fs');
 
-var blockchainInvoke = require('invoke');
+var blockchainInvoke = require('../../fabric-samples/artchain/invoke');
+var blockchainQuery = require('../../fabric-samples/artchain/query');
 
 var Client = require('coinbase').Client;
 var client = new Client({'apiKey': '80abb6aafe606adb604c0103a3c4acb3f30b1e453c25c13166019995c9aaa78a', 
                          'apiSecret': '33474d29164527f162ae8ccb57109b162343bb60850427530110b243a68be737'});
 
 // Routes
-
+router.get('/', (req,res) => {
+console.log('asdf');
+});
 router.get('/art/classify/:imagePath', (req,res) => {
     var imagePath = req.params.imagePath;
      var params = {
@@ -42,27 +45,38 @@ router.get('/signIn', (req,res) =>{
 router.get('/profile',(req,res) =>{
     
 })
-
-router.get('/home', (err,req,res)=>{
-    if(err){
-        console.error(err.stack);
-        res.status(500).send('Something broke!');
-    }else{
-
+router.get('/home', (req,res,next)=>{
+    //if(err){
+        //console.error(err);
+        //res.status(500).send('Something broke!');
+    //}else{
+		console.log('Hello');
 		// Store userID in session
 		var _user = {};
 		client.getCurrentUser(function(err, user) {
 			_user = user;	
 		});
-
-        allArtJSON = blockchainInvoke.invoke("queryAllArt");
+	console.log('HEY');
+        blockchainQuery.query("queryAllArt", function(allArtJSON){
+		console.log('WOO');
+        	allArtJSON = JSON.parse(allArtJSON);
+		if (allArtJSON.length > 7){
+			console.log(allArtJSON.length);
+           		var sliced = allArtJSON.slice(0,7);
+            		res.send(sliced);
+        	}else{
+		//	console.log(res2);
+            		res.send(allArtJSON);//_user));
+        	}
+	});
+	/*console.log('WOO');
         if (allArtJSON.length > 7){
             var sliced = allArtJSON.sliced(0,7);
             res.send(sliced);
         }else{
             res.send(allArtJSON.append(_user));
-        }   
-    }
+        } */  
+    //}
 });
 
 router.get('/art/queryArtById/:artId', (err,req,res)=>{
@@ -73,7 +87,7 @@ router.get('/art/queryArtById/:artId', (err,req,res)=>{
 
     const artId = req.params.artId;
 
-    artJSON = blockchainInvoke.invoke("queryArtById",[artId]);
+    artJSON = blockchainQuery.query("queryArtById",[artId]);
     if(!artJSON){
         res.status(500).send('Could not find the art you\'re looking for!');
     }else{
@@ -88,12 +102,13 @@ router.post('/art/list/:artId', (err,req,res) =>{
         res.status(500).send('Something broke!');
     }else{
         const artId = req.params.name;
-        success = blockchainInvoke.invoke("list",[artId]);
+        blockchainInvoke.invoke("list",[artId],function(success){
         if(!success){
             res.status(500).send('Could not find the art you\'re looking for!');
         }else{
              res.send(true);
         }
+}
     }
 });
     
@@ -103,13 +118,13 @@ router.get('/art/queryAllArt', (err,req,res) =>{
         console.error(err.stack);
         res.status(500).send('Something broke!');
     }else{
-        allArtJSON = blockchainInvoke.invoke("queryAllArt");
+        blockchainQuery.query("queryAllArt",function(allArtJSON){
         if(!allArtJSON){
             res.status(500).send('Could not find the art you\'re looking for!');
         } else{
              res.send(allArtJSON);
         }
-
+}
     }
 });
 
@@ -122,12 +137,13 @@ router.post('/art/auctionSetUp/:artId/:startTime/:endTime', (err,req,res) =>{
         const startTime = req.params.startTime;
         const endTime = req.params.endTime;
 
-        success = blockchainInvoke.invoke("setUpAuction", [artID, startTime, endTime]);
+        blockchainInvoke.invoke("setUpAuction", [artID, startTime, endTime],function(success){
         if (!success) {
             res.status(500).send('Could not begin the auction!');
         } else {
             res.send(true);
         }
+}
     }
 });
 
@@ -139,12 +155,13 @@ router.post('/art/setStatus/:artId/:status', (err,req,res) =>{
         const artId = req.params.artId;
         const status = req.params.status;
 
-        success = blockchainInvoke.invoke("setStatus", [artId, status]);
+        blockchainInvoke.invoke("setStatus", [artId, status],function(success){
         if (!success) {
             res.status(500).send("Could not set status!");
         } else {
             res.send(true);
         }
+}
     }
 });
 
@@ -156,12 +173,13 @@ router.post('/art/setPrice/:artId/:price', (err,req,res) =>{
         const artId = req.params.artId;
         const price = req.params.price;
 
-        success = blockchainInvoke.invoke("setPrice", [artId, price]);
+        blockchainInvoke.invoke("setPrice", [artId, price],function(success){
         if (!success) {
             res.status(500).send("Could not set price!");
         } else {
             res.send(true);
         }
+}
     }
 });
 
@@ -171,7 +189,7 @@ router.post('/search/:tag', (err,req,res)=>{
         res.status(500).send('Something broke!');
     }else{
         var searchTag = req.params.tag;
-        allArtJSON = blockchainInvoke.invoke("queryAllArt");
+        blockchainInvoke.invoke("queryAllArt",function(allArtJSON){
         if(!allArtJSON){
             res.status(500).send('Could not find the art you\'re looking for!');
         } else{
@@ -207,7 +225,7 @@ router.post('/search/:tag', (err,req,res)=>{
                 });
             res.send(searchVideos);
         }
-
+}
     }
 });
 

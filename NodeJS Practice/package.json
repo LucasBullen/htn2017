@@ -1,7 +1,9 @@
 {
     "name": "http_with_express",
     "dependencies": {
-        "express": "^4.15.0",
+        "coinbase": "^2.0.6",
+        "debug": "^3.0.1",
+        "express": "^4.15.4",
         "watson-developer-cloud": "^2.39.0"
     }
 }
