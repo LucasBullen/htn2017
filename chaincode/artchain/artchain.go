@@ -90,6 +90,8 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 		return s.setUpAuction(APIstub, args)
 	} else if function == "bid" {			//artid, userid, bcn_ammount
 		return s.bid(APIstub, args)
+	} else if function == "endAuction" {
+		return s.endAuction(APIstub, args)
 	}
 
 	return shim.Error("Invalid Smart Contract function name.")
@@ -101,12 +103,20 @@ func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Respo
 		"d4735e3a265e16eee03f59718b9b5d030",
 		"d16b72230967de01f640b7e4729b49fce",
 		"0ce05c1decfe3ad16b72230967de01f64",
+		"e4795e3a265e16Fee03f59718b4b8d030",
+		"t6t95e3B265e16leK03f59718b4b8d030",
+		"ze895e3a265e16xR203f59h18b4b8d030",
+		"mnko5e3a225e11Fee03f59718b4b8d030",
 	}
 	art := []Art{
 		Art{ Name: "Wolf", 	Author: "Shimhaq", Description: "A colorful image of a wolf", 	OwnerID: "VFFqVNdyrHzAhFy76QkCFPgowMj8Dc8Jr", BcnValue: "0.13", IsListed: "true", 	AuctionStartTime: "1505591349", AuctionEndTime: "1508184000", HighestBidderId: "640b7e4729b640b7e4729b640b7e4729b", StartingBid: "0.02"},
 		Art{ Name: "Owl", 	Author: "Shimhaq", Description: "A colorful image of an owl", 	OwnerID: "VFFqVNdyrHzAhFy76QkCFPgowMj8Dc8Jr", BcnValue: "0.03", IsListed: "false", 	AuctionStartTime: "", AuctionEndTime: "", HighestBidderId: "", StartingBid: ""},
 		Art{ Name: "Horse", Author: "Shimhaq", Description: "A colorful image of a horse", 	OwnerID: "VFFqVNdyrHzAhFy76QkCFPgowMj8Dc8Jr", BcnValue: "0.1", IsListed: "true",	AuctionStartTime: "1505591349", AuctionEndTime: "1506184000", HighestBidderId: "640b7e4729b640b7e4729b640b7e4729b", StartingBid: "0.1"},
 		Art{ Name: "Lion", 	Author: "Shimhaq", Description: "A colorful image of a lion", 	OwnerID: "VFFqVNdyrHzAhFy76QkCFPgowMj8Dc8Jr", BcnValue: "0.2", IsListed: "true",	AuctionStartTime: "1505591349", AuctionEndTime: "1505684000", HighestBidderId: "640b7e4729b640b7e4729b640b7e4729b", StartingBid: "0.15"},
+		Art{ Name: "Mountain", 	Author: "Ihaka", Description: "An abstract mountain range", 	OwnerID: "Rx9qVNdyrHjAhFy76QpCFtgnwMj8Dc7Jr", BcnValue: "0.08", IsListed: "false", 	AuctionStartTime: "", AuctionEndTime: "", HighestBidderId: "", StartingBid: ""},
+		Art{ Name: "Geometric circle", 	Author: "Ihaka", Description: "A mathematically defined circle", 	OwnerID: "Rx9qVNdyrHjAhFy76QpCFtgnwMj8Dc7Jr", BcnValue: "0.06", IsListed: "false", 	AuctionStartTime: "", AuctionEndTime: "", HighestBidderId: "", StartingBid: ""},
+		Art{ Name: "Geometric lines", 	Author: "Ihaka", Description: "Jagged shapes", 	OwnerID: "Rx9qVNdyrHjAhFy76QpCFtgnwMj8Dc7Jr", BcnValue: "0.17", IsListed: "false", 	AuctionStartTime: "", AuctionEndTime: "", HighestBidderId: "", StartingBid: ""},
+		Art{ Name: "Bumblebee", 	Author: "Ihaka", Description: "A skewed bubmlebee", 	OwnerID: "Rx9qVNdyrHjAhFy76QpCFtgnwMj8Dc7Jr", BcnValue: "0.22", IsListed: "false", 	AuctionStartTime: "", AuctionEndTime: "", HighestBidderId: "", StartingBid: ""},
 	}
 
 	i := 0
