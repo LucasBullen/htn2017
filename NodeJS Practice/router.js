@@ -13,6 +13,10 @@ var fs = require('fs');
 
 var blockchainInvoke = require('invoke');
 
+var Client = require('coinbase').Client;
+var client = new Client({'apiKey': '80abb6aafe606adb604c0103a3c4acb3f30b1e453c25c13166019995c9aaa78a', 
+                         'apiSecret': '33474d29164527f162ae8ccb57109b162343bb60850427530110b243a68be737'});
+
 // Routes
 
 router.get('/art/classify/:imagePath', (req,res) => {
@@ -44,12 +48,19 @@ router.get('/home', (err,req,res)=>{
         console.error(err.stack);
         res.status(500).send('Something broke!');
     }else{
+
+		// Store userID in session
+		var _user = {};
+		client.getCurrentUser(function(err, user) {
+			_user = user;	
+		});
+
         allArtJSON = blockchainInvoke.invoke("queryAllArt");
         if (allArtJSON.length > 7){
             var sliced = allArtJSON.sliced(0,7);
             res.send(sliced);
         }else{
-            res.send(allArtJSON);
+            res.send(allArtJSON.append(_user));
         }   
     }
 });
